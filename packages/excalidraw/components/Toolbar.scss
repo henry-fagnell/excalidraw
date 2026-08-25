@@ -2,6 +2,15 @@
 
 .excalidraw {
   .App-toolbar {
+    // Toolbar-only island fill. Keep --island-bg-color on .excalidraw / .theme--dark
+    // unchanged so sidebar, dialogs, and the styles panel stay default.
+    // Light #f8d0dc: visibly pink, still contrasts --color-on-surface (#1b1b1f).
+    --island-bg-color: #f8d0dc;
+    // Default hover (#f1f0ff) and divider (--color-surface-high) wash out on pink.
+    --button-hover-bg: #f0b4c8;
+    --button-active-bg: #f0b4c8;
+    --default-border-color: #e09bb3;
+
     &.zen-mode {
       .ToolIcon__keybinding,
       .HintViewer {
@@ -21,6 +30,14 @@
       align-self: center;
       background-color: var(--default-border-color);
     }
+  }
+
+  &.theme--dark .App-toolbar {
+    // Dark #5c2a3a: muted mauve, still contrasts --color-on-surface (#e3e3e8).
+    --island-bg-color: #5c2a3a;
+    --button-hover-bg: #7a3d4e;
+    --button-active-bg: #7a3d4e;
+    --default-border-color: #8a4a5c;
   }
 
   .App-toolbar__extra-tools-trigger {
@@ -46,10 +63,19 @@
     }
   }
 
+  // Extra-tools dropdown is also an Island; leave its chrome on the default tokens.
   .App-toolbar__extra-tools-dropdown {
+    --island-bg-color: #ffffff;
+    --button-hover-bg: var(--color-surface-high);
+    --button-active-bg: var(--color-surface-high);
+    --default-border-color: var(--color-surface-high);
     margin-top: 0.375rem;
     right: 0;
     min-width: 11.875rem;
     z-index: 1;
+  }
+
+  &.theme--dark .App-toolbar__extra-tools-dropdown {
+    --island-bg-color: #232329;
   }
 }
