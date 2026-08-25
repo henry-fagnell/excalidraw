@@ -8,16 +8,29 @@ import { STORAGE_KEYS } from "./app_constants";
 const getDarkThemeMediaQuery = (): MediaQueryList | undefined =>
   window.matchMedia?.("(prefers-color-scheme: dark)");
 
+export const getStoredAppTheme = (): Theme | "system" => {
+  const stored = localStorage.getItem(STORAGE_KEYS.LOCAL_STORAGE_THEME);
+
+  if (stored === THEME.LIGHT || stored === THEME.DARK || stored === "system") {
+    return stored;
+  }
+
+  return "system";
+};
+
+export const resolveEditorTheme = (appTheme: Theme | "system"): Theme => {
+  if (appTheme === "system") {
+    return getDarkThemeMediaQuery()?.matches ? THEME.DARK : THEME.LIGHT;
+  }
+
+  return appTheme;
+};
+
 export const useHandleAppTheme = () => {
-  const [appTheme, setAppTheme] = useState<Theme | "system">(() => {
-    return (
-      (localStorage.getItem(STORAGE_KEYS.LOCAL_STORAGE_THEME) as
-        | Theme
-        | "system"
-        | null) || THEME.LIGHT
-    );
-  });
-  const [editorTheme, setEditorTheme] = useState<Theme>(THEME.LIGHT);
+  const [appTheme, setAppTheme] = useState<Theme | "system">(getStoredAppTheme);
+  const [editorTheme, setEditorTheme] = useState<Theme>(() =>
+    resolveEditorTheme(appTheme),
+  );
 
   useEffect(() => {
     const mediaQuery = getDarkThemeMediaQuery();
@@ -37,14 +50,7 @@ export const useHandleAppTheme = () => {
 
   useLayoutEffect(() => {
     localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_THEME, appTheme);
-
-    if (appTheme === "system") {
-      setEditorTheme(
-        getDarkThemeMediaQuery()?.matches ? THEME.DARK : THEME.LIGHT,
-      );
-    } else {
-      setEditorTheme(appTheme);
-    }
+    setEditorTheme(resolveEditorTheme(appTheme));
   }, [appTheme]);
 
   return { editorTheme, appTheme, setAppTheme };

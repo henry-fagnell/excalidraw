@@ -70,13 +70,13 @@
 
         function getTheme() {
           const theme = window.localStorage.getItem("excalidraw-theme");
-
-          if (theme && theme === "system") {
+          // Keep in sync with useHandleAppTheme.ts (cannot import TS from this inline script).
+          if (!theme || theme === "system") {
             return window.matchMedia("(prefers-color-scheme: dark)").matches
               ? "dark"
               : "light";
           } else {
-            return theme || "light";
+            return theme;
           }
         }
 
