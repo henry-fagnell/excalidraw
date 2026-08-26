@@ -2,6 +2,16 @@
 
 .excalidraw {
   .App-toolbar {
+    // Pink Island scoped to the shapes toolbar only. Other chrome (sidebar,
+    // dialogs, styles panel) keeps the global --island-bg-color. Light fill
+    // #fadde8 still contrasts #1b1b1f icons; hover/divider tokens are bumped
+    // because --color-surface-high (#f1f0ff) disappears on rose.
+    --island-bg-color: #fadde8;
+    --button-hover-bg: #f3c4d6;
+    --button-active-bg: #f3c4d6;
+    --default-border-color: #e8a8c0;
+    --color-surface-primary-container: #d4d0ff;
+
     &.zen-mode {
       .ToolIcon__keybinding,
       .HintViewer {
@@ -21,6 +31,17 @@
       align-self: center;
       background-color: var(--default-border-color);
     }
+  }
+
+  &.theme--dark .App-toolbar {
+    // Deep mauve that still contrasts #e3e3e8 icons. Hover/divider/selected
+    // are local — global --color-surface-high (#2e2d39) and selected purple
+    // (#403e6a) sit too close to this fill.
+    --island-bg-color: #6b3350;
+    --button-hover-bg: #854463;
+    --button-active-bg: #854463;
+    --default-border-color: #9a5874;
+    --color-surface-primary-container: #4a4780;
   }
 
   .App-toolbar__extra-tools-trigger {
@@ -51,5 +72,17 @@
     right: 0;
     min-width: 11.875rem;
     z-index: 1;
+    // Extra-tools menu also uses Island; keep default surfaces even if the
+    // dropdown is a descendant of the pink toolbar.
+    --island-bg-color: #ffffff;
+    --button-hover-bg: var(--color-surface-high);
+    --button-active-bg: var(--color-surface-high);
+    --default-border-color: var(--color-surface-high);
+    --color-surface-primary-container: #e0dfff;
+  }
+
+  &.theme--dark .App-toolbar__extra-tools-dropdown {
+    --island-bg-color: #232329;
+    --color-surface-primary-container: #403e6a;
   }
 }
