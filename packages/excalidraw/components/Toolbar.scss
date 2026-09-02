@@ -1,7 +1,15 @@
 @use "../css/variables.module" as *;
 
 .excalidraw {
+  // HEX-1: pink shapes toolbar only. --island-bg-color is shared by sidebar,
+  // dialogs, and the styles panel — do not reassign it on .excalidraw.
   .App-toolbar {
+    --island-bg-color: #f7c6d6;
+    // default hover/divider is lavender-white and disappears on this fill
+    --button-hover-bg: #efadc3;
+    --button-active-bg: #efadc3;
+    --default-border-color: #e09aaf;
+
     &.zen-mode {
       .ToolIcon__keybinding,
       .HintViewer {
@@ -20,6 +28,19 @@
       height: 1.5rem;
       align-self: center;
       background-color: var(--default-border-color);
+    }
+  }
+
+  &.theme--dark {
+    .App-toolbar {
+      --island-bg-color: #6a2e42;
+      --button-hover-bg: #85425a;
+      --button-active-bg: #85425a;
+      --default-border-color: #8f4a60;
+    }
+
+    .App-toolbar__extra-tools-dropdown {
+      --island-bg-color: #232329;
     }
   }
 
@@ -47,6 +68,11 @@
   }
 
   .App-toolbar__extra-tools-dropdown {
+    // extra-tools dropdown is an Island; keep the default surface (HEX-1 OOS)
+    --island-bg-color: #ffffff;
+    --button-hover-bg: var(--color-surface-high);
+    --button-active-bg: var(--color-surface-high);
+    --default-border-color: var(--color-surface-high);
     margin-top: 0.375rem;
     right: 0;
     min-width: 11.875rem;
