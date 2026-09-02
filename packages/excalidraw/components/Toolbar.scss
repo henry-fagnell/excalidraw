@@ -39,7 +39,8 @@
       --default-border-color: #8f4a60;
     }
 
-    .App-toolbar__extra-tools-dropdown {
+    .App-toolbar__extra-tools-dropdown,
+    .tool-popover-content {
       --island-bg-color: #232329;
     }
   }
@@ -67,12 +68,16 @@
     }
   }
 
-  .App-toolbar__extra-tools-dropdown {
-    // extra-tools dropdown is an Island; keep the default surface (HEX-1 OOS)
+  .App-toolbar__extra-tools-dropdown,
+  .tool-popover-content {
+    // overlays render under .App-toolbar (no portal); keep default surface
     --island-bg-color: #ffffff;
     --button-hover-bg: var(--color-surface-high);
     --button-active-bg: var(--color-surface-high);
     --default-border-color: var(--color-surface-high);
+  }
+
+  .App-toolbar__extra-tools-dropdown {
     margin-top: 0.375rem;
     right: 0;
     min-width: 11.875rem;
