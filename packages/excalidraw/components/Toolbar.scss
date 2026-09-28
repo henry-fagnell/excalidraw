@@ -2,6 +2,13 @@
 
 .excalidraw {
   .App-toolbar {
+    // Scoped so sidebar, dialogs, welcome, and styles panel keep the default Island fill.
+    --island-bg-color: #f7c6d6;
+    // Default --color-surface-high (#f1f0ff) washes out on pink; darken hover + dividers.
+    --button-hover-bg: #efadc0;
+    --button-active-bg: #efadc0;
+    --default-border-color: #e09bb2;
+
     &.zen-mode {
       .ToolIcon__keybinding,
       .HintViewer {
@@ -21,6 +28,13 @@
       align-self: center;
       background-color: var(--default-border-color);
     }
+  }
+
+  &.theme--dark .App-toolbar {
+    --island-bg-color: #6a2e42;
+    --button-hover-bg: #824056;
+    --button-active-bg: #824056;
+    --default-border-color: #8d4a5f;
   }
 
   .App-toolbar__extra-tools-trigger {
@@ -47,9 +61,15 @@
   }
 
   .App-toolbar__extra-tools-dropdown {
+    // Dropdown is also an Island; keep the default surface, not the pink toolbar fill.
+    --island-bg-color: #ffffff;
     margin-top: 0.375rem;
     right: 0;
     min-width: 11.875rem;
     z-index: 1;
+  }
+
+  &.theme--dark .App-toolbar__extra-tools-dropdown {
+    --island-bg-color: #232329;
   }
 }
