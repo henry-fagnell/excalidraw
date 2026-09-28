@@ -72,4 +72,13 @@
   &.theme--dark .App-toolbar__extra-tools-dropdown {
     --island-bg-color: #232329;
   }
+
+  // Tool popovers render in place (no portal) under the toolbar Island.
+  .App-toolbar .tool-popover-content {
+    --island-bg-color: #ffffff;
+  }
+
+  &.theme--dark .App-toolbar .tool-popover-content {
+    --island-bg-color: #232329;
+  }
 }
