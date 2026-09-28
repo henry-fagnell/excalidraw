@@ -251,6 +251,7 @@ export const isExcalidrawElement = (
   switch (type) {
     case "text":
     case "diamond":
+    case "star":
     case "rectangle":
     case "iframe":
     case "embeddable":
