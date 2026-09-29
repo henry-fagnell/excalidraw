@@ -78,4 +78,17 @@
   &.theme--dark .App-toolbar__extra-tools-dropdown {
     --island-bg-color: #232329;
   }
+
+  // Tool popovers are not portaled, so they inherit the pink toolbar tokens.
+  // Restore the default island surface, same as the extra-tools dropdown.
+  .tool-popover-content {
+    --island-bg-color: #ffffff;
+    --button-hover-bg: var(--color-surface-high);
+    --button-active-bg: var(--color-surface-high);
+    --default-border-color: var(--color-surface-high);
+  }
+
+  &.theme--dark .tool-popover-content {
+    --island-bg-color: #232329;
+  }
 }
