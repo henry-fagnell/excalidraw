@@ -1,7 +1,16 @@
 @use "../css/variables.module" as *;
 
 .excalidraw {
+  // Pink island fill is scoped to the shapes toolbar only. Other Islands
+  // (sidebar, dialogs, styles panel, welcome screen) keep --island-bg-color
+  // from theme.scss. Light #f7c6d6 contrasts #1b1b1f icons; hover/divider
+  // are bumped so they stay visible on pink instead of lavender surface-high.
   .App-toolbar {
+    --island-bg-color: #f7c6d6;
+    --button-hover-bg: #efadc0;
+    --button-active-bg: #efadc0;
+    --default-border-color: #e09bb2;
+
     &.zen-mode {
       .ToolIcon__keybinding,
       .HintViewer {
@@ -21,6 +30,13 @@
       align-self: center;
       background-color: var(--default-border-color);
     }
+  }
+
+  &.theme--dark .App-toolbar {
+    --island-bg-color: #6a2e42;
+    --button-hover-bg: #824056;
+    --button-active-bg: #824056;
+    --default-border-color: #8d4a5f;
   }
 
   .App-toolbar__extra-tools-trigger {
@@ -46,10 +62,20 @@
     }
   }
 
+  // Extra-tools menu uses Island too — restore default surfaces so the
+  // dropdown is not pink if it inherits from .App-toolbar.
   .App-toolbar__extra-tools-dropdown {
+    --island-bg-color: #ffffff;
+    --button-hover-bg: var(--color-surface-high);
+    --button-active-bg: var(--color-surface-high);
+    --default-border-color: var(--color-surface-high);
     margin-top: 0.375rem;
     right: 0;
     min-width: 11.875rem;
     z-index: 1;
+  }
+
+  &.theme--dark .App-toolbar__extra-tools-dropdown {
+    --island-bg-color: #232329;
   }
 }
