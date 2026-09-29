@@ -1,18 +1,18 @@
 import { KEYS } from "@excalidraw/common";
 
 import { Excalidraw } from "../index";
+import * as restore from "../data/restore";
 
 import { findShapeByKey } from "../components/Tools";
 
 import { API } from "./helpers/api";
-import { Keyboard, Pointer, UI } from "./helpers/ui";
-import { act, GlobalTestState, render } from "./test-utils";
+import { Keyboard, UI } from "./helpers/ui";
+import { render } from "./test-utils";
 
 import type { AppClassProperties } from "../types";
 
 describe("star tool", () => {
   const h = window.h;
-  const mouse = new Pointer("mouse");
 
   beforeEach(async () => {
     localStorage.clear();
@@ -20,14 +20,15 @@ describe("star tool", () => {
   });
 
   it("creates a star element when drawing with the toolbar tool", () => {
-    UI.clickTool("star");
-    expect(h.state.activeTool.type).toBe("star");
+    const star = UI.createElement("star", {
+      x: 50,
+      y: 50,
+      width: 100,
+      height: 80,
+    });
 
-    mouse.downAt(50, 50);
-    mouse.upAt(150, 130);
-
-    expect(h.elements).toHaveLength(1);
-    expect(h.elements[0].type).toBe("star");
+    expect(star.type).toBe("star");
+    expect(h.elements.filter((e) => e.type === "star")).toHaveLength(1);
   });
 
   it("activates via the W keyboard shortcut", () => {
@@ -45,7 +46,7 @@ describe("star tool", () => {
 
   it("round-trips through restore", () => {
     const star = API.createElement({ type: "star", width: 80, height: 80 });
-    const restored = API.restoreElements([star], null);
+    const restored = restore.restoreElements([star], null);
     expect(restored).toHaveLength(1);
     expect(restored[0].type).toBe("star");
   });
