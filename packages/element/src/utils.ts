@@ -34,7 +34,7 @@ import type {
   Zoom,
 } from "@excalidraw/excalidraw/types";
 
-import { elementCenterPoint, getDiamondPoints } from "./bounds";
+import { elementCenterPoint, getDiamondPoints, getStarPoints } from "./bounds";
 
 import { generateLinearCollisionShape } from "./shape";
 
@@ -53,6 +53,7 @@ import type {
   ExcalidrawArrowElement,
   ExcalidrawBindableElement,
   ExcalidrawDiamondElement,
+  ExcalidrawStarElement,
   ExcalidrawElement,
   ExcalidrawFreeDrawElement,
   ExcalidrawLinearElement,
@@ -469,6 +470,35 @@ export function deconstructDiamondElement(
 
   setElementShapesCacheEntry(element, shape, offset);
 
+  return shape;
+}
+
+export function deconstructStarElement(
+  element: ExcalidrawStarElement,
+  offset: number = 0,
+): [LineSegment<GlobalPoint>[], Curve<GlobalPoint>[]] {
+  const cachedShape = getElementShapesCacheEntry(element, offset);
+
+  if (cachedShape) {
+    return cachedShape;
+  }
+
+  const coords = getStarPoints(element);
+  const vertices: GlobalPoint[] = [];
+  for (let i = 0; i < coords.length; i += 2) {
+    vertices.push(
+      pointFrom(element.x + coords[i], element.y + coords[i + 1]),
+    );
+  }
+
+  const sides: LineSegment<GlobalPoint>[] = [];
+  for (let i = 0; i < vertices.length; i++) {
+    const next = vertices[(i + 1) % vertices.length];
+    sides.push(lineSegment(vertices[i], next));
+  }
+
+  const shape = [sides, []] as ElementShape;
+  setElementShapesCacheEntry(element, shape, offset);
   return shape;
 }
 

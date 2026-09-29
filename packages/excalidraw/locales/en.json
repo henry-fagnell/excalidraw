@@ -320,6 +320,7 @@
     "image": "Insert image",
     "rectangle": "Rectangle",
     "diamond": "Diamond",
+    "star": "Star",
     "ellipse": "Ellipse",
     "arrow": "Arrow",
     "line": "Line",
@@ -348,6 +349,7 @@
   "element": {
     "rectangle": "Rectangle",
     "diamond": "Diamond",
+    "star": "Star",
     "ellipse": "Ellipse",
     "arrow": "Arrow",
     "line": "Line",

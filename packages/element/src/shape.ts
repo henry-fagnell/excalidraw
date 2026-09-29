@@ -62,6 +62,7 @@ import {
   elementCenterPoint,
   getArrowheadPoints,
   getDiamondPoints,
+  getStarPoints,
   getElementAbsoluteCoords,
 } from "./bounds";
 import { shouldTestInside } from "./collision";
@@ -229,6 +230,7 @@ export const generateRoughOptions = (
     case "iframe":
     case "embeddable":
     case "diamond":
+    case "star":
     case "ellipse": {
       options.fillStyle = element.fillStyle;
       options.fill = isTransparent(element.backgroundColor)
@@ -859,6 +861,18 @@ const _generateElementShape = (
       }
       return shape;
     }
+    case "star": {
+      const coords = getStarPoints(element);
+      const polygonPoints: [number, number][] = [];
+      for (let i = 0; i < coords.length; i += 2) {
+        polygonPoints.push([coords[i], coords[i + 1]]);
+      }
+      const shape: ElementShapes[typeof element.type] = generator.polygon(
+        polygonPoints,
+        generateRoughOptions(element, false, isDarkMode),
+      );
+      return shape;
+    }
     case "ellipse": {
       const shape: ElementShapes[typeof element.type] = generator.ellipse(
         element.width / 2,
@@ -1074,6 +1088,7 @@ export const getElementShape = <Point extends GlobalPoint | LocalPoint>(
   switch (element.type) {
     case "rectangle":
     case "diamond":
+    case "star":
     case "frame":
     case "magicframe":
     case "embeddable":

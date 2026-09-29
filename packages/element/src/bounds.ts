@@ -45,6 +45,7 @@ import { getElementShape } from "./shape";
 import {
   deconstructDiamondElement,
   deconstructRectanguloidElement,
+  deconstructStarElement,
 } from "./utils";
 import { intersectElementWithLineSegment } from "./collision";
 import { elementOverlapsWithFrame, getContainingFrame } from "./frame";
@@ -173,6 +174,20 @@ export class ElementBounds {
       ];
     } else if (isLinearElement(element)) {
       bounds = getLinearElementRotatedBounds(element, cx, cy, elementsMap);
+    } else if (element.type === "star") {
+      const coords = getStarPoints(element);
+      const xs: number[] = [];
+      const ys: number[] = [];
+      for (let i = 0; i < coords.length; i += 2) {
+        const [rx, ry] = pointRotateRads(
+          pointFrom(element.x + coords[i], element.y + coords[i + 1]),
+          pointFrom(cx, cy),
+          element.angle,
+        );
+        xs.push(rx);
+        ys.push(ry);
+      }
+      bounds = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
     } else if (element.type === "diamond") {
       const [x11, y11] = pointRotateRads(
         pointFrom(cx, y1),
@@ -365,6 +380,9 @@ export const getElementLineSegments = (
     const rotatedSides = getRotatedSides(sides, center, element.angle);
 
     return [...rotatedSides, ...cornerSegments];
+  } else if (element.type === "star") {
+    const [sides] = deconstructStarElement(element);
+    return getRotatedSides(sides, center, element.angle);
   } else if (shape.type === "polygon") {
     if (isTextElement(element)) {
       const container = getContainerElement(element, elementsMap);
@@ -531,6 +549,36 @@ export const getDiamondPoints = (element: ExcalidrawElement) => {
   const leftY = rightY;
 
   return [topX, topY, rightX, rightY, bottomX, bottomY, leftX, leftY];
+};
+
+const STAR_INNER_RADIUS_RATIO = 0.38;
+
+/** Local (element-relative) flat [x,y,...] for a 5-point star in the element box. */
+export const getStarPoints = (element: ExcalidrawElement) => {
+  const w = element.width;
+  const h = element.height;
+  const cx = w / 2;
+  const cy = h / 2;
+  const rx = w / 2;
+  const ry = h / 2;
+  const points: number[] = [];
+
+  for (let i = 0; i < 10; i++) {
+    const angle = -Math.PI / 2 + (i * Math.PI) / 5;
+    const radiusScale = i % 2 === 0 ? 1 : STAR_INNER_RADIUS_RATIO;
+    let x = cx + rx * radiusScale * Math.cos(angle);
+    let y = cy + ry * radiusScale * Math.sin(angle);
+    // avoid 0 coords that upset rough.js (same rationale as getDiamondPoints)
+    if (Math.abs(x) < 1) {
+      x += x >= 0 ? 1 : -1;
+    }
+    if (Math.abs(y) < 1) {
+      y += y >= 0 ? 1 : -1;
+    }
+    points.push(Math.floor(x), Math.floor(y));
+  }
+
+  return points;
 };
 
 // reference: https://eliot-jones.com/2019/12/cubic-bezier-curve-bounding-boxes
