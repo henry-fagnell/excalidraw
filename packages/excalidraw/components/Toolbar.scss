@@ -78,4 +78,18 @@
   &.theme--dark .App-toolbar__extra-tools-dropdown {
     --island-bg-color: #232329;
   }
+
+  // Tool popovers render in-tree under .App-toolbar and read the same
+  // tokens. Restore default island surfaces so compact and mobile pickers
+  // are not pink.
+  .tool-popover-content {
+    --island-bg-color: #ffffff;
+    --button-hover-bg: var(--color-surface-high);
+    --button-active-bg: var(--color-surface-high);
+    --default-border-color: var(--color-surface-high);
+  }
+
+  &.theme--dark .tool-popover-content {
+    --island-bg-color: #232329;
+  }
 }
