@@ -53,9 +53,17 @@
     }
   }
 
-  .App-toolbar__extra-tools-dropdown {
-    // dropdown is also an Island; keep the default surface (not pink)
+  // Flyouts stay in the toolbar DOM (not portaled), so they inherit the
+  // pink tokens. Restore the default surface; only the shapes toolbar is pink.
+  .App-toolbar__extra-tools-dropdown,
+  .tool-popover-content {
     --island-bg-color: #ffffff;
+    --button-hover-bg: var(--color-surface-high);
+    --button-active-bg: var(--color-surface-high);
+    --default-border-color: var(--color-surface-high);
+  }
+
+  .App-toolbar__extra-tools-dropdown {
     margin-top: 0.375rem;
     right: 0;
     min-width: 11.875rem;
@@ -70,7 +78,8 @@
       --default-border-color: #8d4a5f;
     }
 
-    .App-toolbar__extra-tools-dropdown {
+    .App-toolbar__extra-tools-dropdown,
+    .tool-popover-content {
       --island-bg-color: #232329;
     }
   }
