@@ -163,17 +163,12 @@ export const exportCanvas = async (
     }
   }
 
-  const tempCanvas = exportToCanvas(
-    type === "png" ? elements.slice(0, elements.length - 1) : elements,
-    appState,
-    files,
-    {
-      exportBackground,
-      viewBackgroundColor,
-      exportPadding,
-      exportingFrame,
-    },
-  );
+  const tempCanvas = exportToCanvas(elements, appState, files, {
+    exportBackground,
+    viewBackgroundColor,
+    exportPadding,
+    exportingFrame,
+  });
 
   if (type === "png") {
     let blob = canvasToBlob(tempCanvas);
