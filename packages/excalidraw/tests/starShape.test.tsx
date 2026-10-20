@@ -1,4 +1,4 @@
-import { restore } from "../data/restore";
+import * as restore from "../data/restore";
 
 import { Excalidraw } from "../index";
 
@@ -15,8 +15,6 @@ describe("star tool", () => {
   });
 
   it("creates a star element when dragging on the canvas", () => {
-    UI.clickOnTestId("toolbar-star");
-
     const star = UI.createElement("star", {
       x: 50,
       y: 60,
