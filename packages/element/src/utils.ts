@@ -34,7 +34,7 @@ import type {
   Zoom,
 } from "@excalidraw/excalidraw/types";
 
-import { elementCenterPoint, getDiamondPoints } from "./bounds";
+import { elementCenterPoint, getDiamondPoints, getStarPoints } from "./bounds";
 
 import { generateLinearCollisionShape } from "./shape";
 
@@ -53,6 +53,7 @@ import type {
   ExcalidrawArrowElement,
   ExcalidrawBindableElement,
   ExcalidrawDiamondElement,
+  ExcalidrawStarElement,
   ExcalidrawElement,
   ExcalidrawFreeDrawElement,
   ExcalidrawLinearElement,
@@ -466,6 +467,53 @@ export function deconstructDiamondElement(
   ];
 
   const shape = [sides, corners.flat()] as ElementShape;
+
+  setElementShapesCacheEntry(element, shape, offset);
+
+  return shape;
+}
+
+const inflateStarPoint = (
+  px: number,
+  py: number,
+  width: number,
+  height: number,
+  offset: number,
+): [number, number] => {
+  if (offset === 0) {
+    return [px, py];
+  }
+  const cx = width / 2;
+  const cy = height / 2;
+  const dx = px - cx;
+  const dy = py - cy;
+  const len = Math.hypot(dx, dy) || 1;
+  return [px + (dx / len) * offset, py + (dy / len) * offset];
+};
+
+export function deconstructStarElement(
+  element: ExcalidrawStarElement,
+  offset: number = 0,
+): [LineSegment<GlobalPoint>[], Curve<GlobalPoint>[]] {
+  const cachedShape = getElementShapesCacheEntry(element, offset);
+
+  if (cachedShape) {
+    return cachedShape;
+  }
+
+  const localPoints = getStarPoints(element).map(([px, py]) =>
+    inflateStarPoint(px, py, element.width, element.height, offset),
+  );
+
+  const sides = localPoints.map((point, index) => {
+    const next = localPoints[(index + 1) % localPoints.length];
+    return lineSegment<GlobalPoint>(
+      pointFrom(element.x + point[0], element.y + point[1]),
+      pointFrom(element.x + next[0], element.y + next[1]),
+    );
+  });
+
+  const shape = [sides, []] as ElementShape;
 
   setElementShapesCacheEntry(element, shape, offset);
 
