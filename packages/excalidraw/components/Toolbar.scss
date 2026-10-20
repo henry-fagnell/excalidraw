@@ -1,7 +1,15 @@
 @use "../css/variables.module" as *;
 
 .excalidraw {
+  // Pink fill is scoped to the shapes toolbar Island. --island-bg-color is
+  // shared by sidebar, dialogs, and the styles panel.
   .App-toolbar {
+    --island-bg-color: #f7c6d6;
+    // Default hover and divider are lavender-white and disappear on this fill.
+    --button-hover-bg: #efadc3;
+    --button-active-bg: #efadc3;
+    --default-border-color: #e09aaf;
+
     &.zen-mode {
       .ToolIcon__keybinding,
       .HintViewer {
@@ -20,6 +28,20 @@
       height: 1.5rem;
       align-self: center;
       background-color: var(--default-border-color);
+    }
+  }
+
+  &.theme--dark {
+    .App-toolbar {
+      --island-bg-color: #6a2e42;
+      --button-hover-bg: #85425a;
+      --button-active-bg: #85425a;
+      --default-border-color: #8f4a60;
+    }
+
+    .App-toolbar__extra-tools-dropdown,
+    .tool-popover-content {
+      --island-bg-color: #232329;
     }
   }
 
@@ -44,6 +66,16 @@
       background: var(--color-surface-primary-container);
       color: var(--color-on-primary-container);
     }
+  }
+
+  // Flyouts stay in the toolbar DOM, so they inherit the pink tokens.
+  // Restore the default island surface so menus stay unchanged.
+  .App-toolbar__extra-tools-dropdown,
+  .tool-popover-content {
+    --island-bg-color: #ffffff;
+    --button-hover-bg: var(--color-surface-high);
+    --button-active-bg: var(--color-surface-high);
+    --default-border-color: var(--color-surface-high);
   }
 
   .App-toolbar__extra-tools-dropdown {
