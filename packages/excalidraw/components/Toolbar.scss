@@ -1,7 +1,14 @@
 @use "../css/variables.module" as *;
 
 .excalidraw {
+  // HEX-1: pink fill is scoped to the shapes toolbar Island only.
+  // Do not reassign --island-bg-color on .excalidraw / .theme--dark.
   .App-toolbar {
+    --island-bg-color: #f7c6d6;
+    --button-hover-bg: #efadc0;
+    --button-active-bg: #efadc0;
+    --default-border-color: #e09bb2;
+
     &.zen-mode {
       .ToolIcon__keybinding,
       .HintViewer {
@@ -47,9 +54,24 @@
   }
 
   .App-toolbar__extra-tools-dropdown {
+    // dropdown is also an Island; keep the default surface (not pink)
+    --island-bg-color: #ffffff;
     margin-top: 0.375rem;
     right: 0;
     min-width: 11.875rem;
     z-index: 1;
+  }
+
+  &.theme--dark {
+    .App-toolbar {
+      --island-bg-color: #6a2e42;
+      --button-hover-bg: #824056;
+      --button-active-bg: #824056;
+      --default-border-color: #8d4a5f;
+    }
+
+    .App-toolbar__extra-tools-dropdown {
+      --island-bg-color: #232329;
+    }
   }
 }
