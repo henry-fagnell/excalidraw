@@ -199,6 +199,19 @@ export class ElementBounds {
       const maxX = Math.max(x11, x12, x22, x21);
       const maxY = Math.max(y11, y12, y22, y21);
       bounds = [minX, minY, maxX, maxY];
+    } else if (element.type === "star") {
+      const rotated = getStarPoints(element).map(([lx, ly]) =>
+        pointRotateRads(
+          pointFrom(element.x + lx, element.y + ly),
+          pointFrom(cx, cy),
+          element.angle,
+        ),
+      );
+      const minX = Math.min(...rotated.map((p) => p[0]));
+      const minY = Math.min(...rotated.map((p) => p[1]));
+      const maxX = Math.max(...rotated.map((p) => p[0]));
+      const maxY = Math.max(...rotated.map((p) => p[1]));
+      bounds = [minX, minY, maxX, maxY];
     } else if (element.type === "ellipse") {
       const w = (x2 - x1) / 2;
       const h = (y2 - y1) / 2;
@@ -531,6 +544,45 @@ export const getDiamondPoints = (element: ExcalidrawElement) => {
   const leftY = rightY;
 
   return [topX, topY, rightX, rightY, bottomX, bottomY, leftX, leftY];
+};
+
+export const STAR_INNER_RADIUS_RATIO = 0.38;
+
+/** Local element coords: 5-point star scaled to the element bounding box. */
+export const getStarPoints = (element: ExcalidrawElement): [number, number][] => {
+  const w = Math.max(element.width, 1);
+  const h = Math.max(element.height, 1);
+
+  const unitPoints: [number, number][] = [];
+  for (let i = 0; i < 10; i++) {
+    const k = Math.floor(i / 2);
+    const isOuter = i % 2 === 0;
+    const theta =
+      -Math.PI / 2 + k * ((2 * Math.PI) / 5) + (isOuter ? 0 : Math.PI / 5);
+    const r = isOuter ? 1 : STAR_INNER_RADIUS_RATIO;
+    unitPoints.push([r * Math.cos(theta), r * Math.sin(theta)]);
+  }
+
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const [x, y] of unitPoints) {
+    minX = Math.min(minX, x);
+    minY = Math.min(minY, y);
+    maxX = Math.max(maxX, x);
+    maxY = Math.max(maxY, y);
+  }
+
+  const unitW = Math.max(maxX - minX, 1e-6);
+  const unitH = Math.max(maxY - minY, 1e-6);
+  const scaleX = w / unitW;
+  const scaleY = h / unitH;
+
+  return unitPoints.map(([x, y]) => [
+    (x - minX) * scaleX,
+    (y - minY) * scaleY,
+  ]);
 };
 
 // reference: https://eliot-jones.com/2019/12/cubic-bezier-curve-bounding-boxes

@@ -34,6 +34,7 @@ import {
   getCenterForBounds,
   getCubicBezierCurveBound,
   getDiamondPoints,
+  getStarPoints,
   getElementBounds,
   pointInsideBounds,
 } from "./bounds";
@@ -68,6 +69,7 @@ import type {
   ExcalidrawArrowElement,
   ExcalidrawBindableElement,
   ExcalidrawDiamondElement,
+  ExcalidrawStarElement,
   ExcalidrawElement,
   ExcalidrawEllipseElement,
   ExcalidrawFreeDrawElement,
@@ -489,6 +491,14 @@ export const intersectElementWithLineSegment = (
         offset,
         onlyFirst,
       );
+    case "star":
+      return intersectStarWithLineSegment(
+        element,
+        elementsMap,
+        line,
+        offset,
+        onlyFirst,
+      );
     case "ellipse":
       return intersectEllipseWithLineSegment(
         element,
@@ -682,6 +692,49 @@ const intersectRectanguloidWithLineSegment = (
  * @param b
  * @returns
  */
+const getStarLineSegments = (
+  element: ExcalidrawStarElement,
+): LineSegment<GlobalPoint>[] => {
+  const points = getStarPoints(element);
+  const segments: LineSegment<GlobalPoint>[] = [];
+  for (let i = 0; i < points.length; i++) {
+    const [x1, y1] = points[i];
+    const [x2, y2] = points[(i + 1) % points.length];
+    segments.push(
+      lineSegment(
+        pointFrom<GlobalPoint>(element.x + x1, element.y + y1),
+        pointFrom<GlobalPoint>(element.x + x2, element.y + y2),
+      ),
+    );
+  }
+  return segments;
+};
+
+const intersectStarWithLineSegment = (
+  element: ExcalidrawStarElement,
+  elementsMap: ElementsMap,
+  l: LineSegment<GlobalPoint>,
+  _offset: number = 0,
+  onlyFirst = false,
+): GlobalPoint[] => {
+  const center = elementCenterPoint(element, elementsMap);
+  const rotatedA = pointRotateRads(l[0], center, -element.angle as Radians);
+  const rotatedB = pointRotateRads(l[1], center, -element.angle as Radians);
+  const rotatedIntersector = lineSegment(rotatedA, rotatedB);
+  const intersections: GlobalPoint[] = [];
+
+  lineIntersections(
+    getStarLineSegments(element),
+    rotatedIntersector,
+    intersections,
+    center,
+    element.angle,
+    onlyFirst,
+  );
+
+  return intersections;
+};
+
 const intersectDiamondWithLineSegment = (
   element: ExcalidrawDiamondElement,
   elementsMap: ElementsMap,
