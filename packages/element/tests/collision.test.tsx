@@ -9,6 +9,40 @@ import { render } from "@excalidraw/excalidraw/tests/test-utils";
 import * as distance from "../src/distance";
 import { hitElementItself } from "../src/collision";
 
+describe("star hit testing", () => {
+  it("hits the interior of a filled star and misses a bounding-box corner", () => {
+    const element = API.createElement({
+      type: "star",
+      x: 0,
+      y: 0,
+      width: 200,
+      height: 200,
+      backgroundColor: "#ffffff",
+    });
+    const elementsMap = arrayToMap([element]);
+
+    // Off the star's symmetry axes so the inside-test ray doesn't pass
+    // through a vertex (that makes the parity count unreliable).
+    expect(
+      hitElementItself({
+        point: pointFrom<GlobalPoint>(115, 105),
+        element,
+        threshold: 0,
+        elementsMap,
+      }),
+    ).toBe(true);
+
+    expect(
+      hitElementItself({
+        point: pointFrom<GlobalPoint>(1, 1),
+        element,
+        threshold: 0,
+        elementsMap,
+      }),
+    ).toBe(false);
+  });
+});
+
 describe("check rotated elements can be hit:", () => {
   beforeEach(async () => {
     localStorage.clear();

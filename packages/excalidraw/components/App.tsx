@@ -10292,17 +10292,22 @@ class App extends React.Component<AppProps, AppState> {
       | "selection"
       | "rectangle"
       | "diamond"
+      | "star"
       | "ellipse"
       | "iframe"
       | "embeddable",
   ) {
-    return this.state.currentItemRoundness === "round"
-      ? {
-          type: isUsingAdaptiveRadius(elementType)
-            ? ROUNDNESS.ADAPTIVE_RADIUS
-            : ROUNDNESS.PROPORTIONAL_RADIUS,
-        }
-      : null;
+    // Stars are sharp-cornered only. Don't let a "round" edge preference
+    // store proportional roundness on them.
+    if (elementType === "star" || this.state.currentItemRoundness !== "round") {
+      return null;
+    }
+
+    return {
+      type: isUsingAdaptiveRadius(elementType)
+        ? ROUNDNESS.ADAPTIVE_RADIUS
+        : ROUNDNESS.PROPORTIONAL_RADIUS,
+    };
   }
 
   private getCurrentItemStrokeWidth(elementType: ExcalidrawElement["type"]) {

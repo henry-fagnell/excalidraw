@@ -15,6 +15,7 @@ import {
   SelectionIcon,
   RectangleIcon,
   DiamondIcon,
+  StarIcon,
   EllipseIcon,
   ArrowIcon,
   LineIcon,
@@ -87,6 +88,12 @@ export const TOOLS = defineTools({
     icon: DiamondIcon,
     letterKey: KEYS.D,
     numericKey: KEYS["3"],
+    fillable: true,
+  },
+  // No letter or number shortcut: the free letters are reserved for a later
+  // choice, and the numeric row is already taken.
+  star: {
+    icon: StarIcon,
     fillable: true,
   },
   ellipse: {
@@ -179,9 +186,11 @@ export const getToolLetter = (type: ToolbarToolType) => {
 export const getToolShortcut = (type: ToolbarToolType) => {
   const letter = getToolLetter(type);
   const { numericKey } = TOOLS[type];
-  return letter && numericKey != null
-    ? `${letter} ${t("helpDialog.or")} ${numericKey}`
-    : `${letter || numericKey}`;
+  if (letter && numericKey != null) {
+    return `${letter} ${t("helpDialog.or")} ${numericKey}`;
+  }
+  // A missing shortcut used to interpolate as the string "undefined".
+  return letter || numericKey || undefined;
 };
 
 export const findShapeByKey = (
@@ -318,6 +327,7 @@ const createToolButton = (
 export const HandToolButton = createToolButton("hand");
 export const RectangleToolButton = createToolButton("rectangle");
 export const DiamondToolButton = createToolButton("diamond");
+export const StarToolButton = createToolButton("star");
 export const EllipseToolButton = createToolButton("ellipse");
 export const ArrowToolButton = createToolButton("arrow");
 export const LineToolButton = createToolButton("line");

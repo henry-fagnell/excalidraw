@@ -34,6 +34,31 @@ describe("restoreElements", () => {
     mockSizeHelper.mockRestore();
   });
 
+  it("restores a star element as a star", () => {
+    const star = API.createElement({
+      type: "star",
+      x: 10,
+      y: 20,
+      width: 100,
+      height: 80,
+      backgroundColor: "#ff0000",
+    });
+
+    const [restored] = restore.restoreElements([star], null);
+
+    expect(restored).toEqual(
+      expect.objectContaining({
+        id: star.id,
+        type: "star",
+        x: 10,
+        y: 20,
+        width: 100,
+        height: 80,
+        backgroundColor: "#ff0000",
+      }),
+    );
+  });
+
   it("basic restoreElements", () => {
     const textElement = API.createElement({ type: "text" });
     const rectElement = API.createElement({ type: "rectangle" });
