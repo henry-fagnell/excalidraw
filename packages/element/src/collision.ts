@@ -51,6 +51,7 @@ import {
   deconstructDiamondElement,
   deconstructLinearOrFreeDrawElement,
   deconstructRectanguloidElement,
+  deconstructStarElement,
 } from "./utils";
 
 import { getBoundTextElement } from "./textElement";
@@ -69,6 +70,7 @@ import type {
   ExcalidrawBindableElement,
   ExcalidrawDiamondElement,
   ExcalidrawElement,
+  ExcalidrawStarElement,
   ExcalidrawEllipseElement,
   ExcalidrawFreeDrawElement,
   ExcalidrawLinearElement,
@@ -489,6 +491,13 @@ export const intersectElementWithLineSegment = (
         offset,
         onlyFirst,
       );
+    case "star":
+      return intersectStarWithLineSegment(
+        element,
+        elementsMap,
+        line,
+        onlyFirst,
+      );
     case "ellipse":
       return intersectEllipseWithLineSegment(
         element,
@@ -732,6 +741,31 @@ const intersectDiamondWithLineSegment = (
  * @param b
  * @returns
  */
+const intersectStarWithLineSegment = (
+  element: ExcalidrawStarElement,
+  elementsMap: ElementsMap,
+  l: LineSegment<GlobalPoint>,
+  onlyFirst = false,
+): GlobalPoint[] => {
+  const center = elementCenterPoint(element, elementsMap);
+
+  // Rotate the segment instead of the star, then rotate hits back.
+  const rotatedA = pointRotateRads(l[0], center, -element.angle as Radians);
+  const rotatedB = pointRotateRads(l[1], center, -element.angle as Radians);
+  const intersections: GlobalPoint[] = [];
+
+  lineIntersections(
+    deconstructStarElement(element),
+    lineSegment(rotatedA, rotatedB),
+    intersections,
+    center,
+    element.angle,
+    onlyFirst,
+  );
+
+  return intersections;
+};
+
 const intersectEllipseWithLineSegment = (
   element: ExcalidrawEllipseElement,
   elementsMap: ElementsMap,

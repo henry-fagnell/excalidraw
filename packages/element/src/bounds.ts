@@ -45,6 +45,7 @@ import { getElementShape } from "./shape";
 import {
   deconstructDiamondElement,
   deconstructRectanguloidElement,
+  deconstructStarElement,
 } from "./utils";
 import { intersectElementWithLineSegment } from "./collision";
 import { elementOverlapsWithFrame, getContainingFrame } from "./frame";
@@ -357,6 +358,12 @@ export const getElementLineSegments = (
       .flat();
     const rotatedSides = getRotatedSides(sides, center, element.angle);
     return [...rotatedSides, ...cornerSegments];
+  } else if (element.type === "star") {
+    return getRotatedSides(
+      deconstructStarElement(element),
+      center,
+      element.angle,
+    );
   } else if (element.type === "diamond") {
     const [sides, corners] = deconstructDiamondElement(element);
     const cornerSegments = corners
@@ -531,6 +538,40 @@ export const getDiamondPoints = (element: ExcalidrawElement) => {
   const leftY = rightY;
 
   return [topX, topY, rightX, rightY, bottomX, bottomY, leftX, leftY];
+};
+
+/** Inner radius as a fraction of the outer radius of a 5-point star. */
+const STAR_INNER_RATIO = 0.38;
+const STAR_POINT_COUNT = 5;
+
+// Unit star centered at the origin with the first tip at -90° (up). Its own
+// bounding box is wider than it is tall (~1.902 x ~1.809), so callers map
+// these points onto the element box and the star touches all four sides.
+const STAR_UNIT_POINTS: ReadonlyArray<readonly [number, number]> = Array.from(
+  { length: STAR_POINT_COUNT * 2 },
+  (_, index) => {
+    const angle = -Math.PI / 2 + (index * Math.PI) / STAR_POINT_COUNT;
+    const radius = index % 2 === 0 ? 1 : STAR_INNER_RATIO;
+    return [radius * Math.cos(angle), radius * Math.sin(angle)] as const;
+  },
+);
+
+const STAR_UNIT_MIN_X = Math.min(...STAR_UNIT_POINTS.map(([x]) => x));
+const STAR_UNIT_MAX_X = Math.max(...STAR_UNIT_POINTS.map(([x]) => x));
+const STAR_UNIT_MIN_Y = Math.min(...STAR_UNIT_POINTS.map(([, y]) => y));
+const STAR_UNIT_MAX_Y = Math.max(...STAR_UNIT_POINTS.map(([, y]) => y));
+const STAR_UNIT_SPAN_X = STAR_UNIT_MAX_X - STAR_UNIT_MIN_X;
+const STAR_UNIT_SPAN_Y = STAR_UNIT_MAX_Y - STAR_UNIT_MIN_Y;
+
+/** 10 local points of a 5-point star filling `element`'s bounding box. */
+export const getStarPoints = (element: {
+  width: number;
+  height: number;
+}): [number, number][] => {
+  return STAR_UNIT_POINTS.map(([x, y]) => [
+    ((x - STAR_UNIT_MIN_X) / STAR_UNIT_SPAN_X) * element.width,
+    ((y - STAR_UNIT_MIN_Y) / STAR_UNIT_SPAN_Y) * element.height,
+  ]);
 };
 
 // reference: https://eliot-jones.com/2019/12/cubic-bezier-curve-bounding-boxes

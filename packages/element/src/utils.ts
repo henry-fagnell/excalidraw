@@ -34,7 +34,7 @@ import type {
   Zoom,
 } from "@excalidraw/excalidraw/types";
 
-import { elementCenterPoint, getDiamondPoints } from "./bounds";
+import { elementCenterPoint, getDiamondPoints, getStarPoints } from "./bounds";
 
 import { generateLinearCollisionShape } from "./shape";
 
@@ -54,6 +54,7 @@ import type {
   ExcalidrawBindableElement,
   ExcalidrawDiamondElement,
   ExcalidrawElement,
+  ExcalidrawStarElement,
   ExcalidrawFreeDrawElement,
   ExcalidrawLinearElement,
   ExcalidrawRectanguloidElement,
@@ -470,6 +471,22 @@ export function deconstructDiamondElement(
   setElementShapesCacheEntry(element, shape, offset);
 
   return shape;
+}
+
+/**
+ * Unrotated outline of a star, as line segments in global coordinates.
+ * Stars stay sharp-cornered, so unlike diamonds there are no curves.
+ */
+export function deconstructStarElement(
+  element: ExcalidrawStarElement,
+): LineSegment<GlobalPoint>[] {
+  const points = getStarPoints(element).map(([x, y]) =>
+    pointFrom<GlobalPoint>(element.x + x, element.y + y),
+  );
+
+  return points.map((point, index) =>
+    lineSegment(point, points[(index + 1) % points.length]),
+  );
 }
 
 // Checks if the first and last point are close enough

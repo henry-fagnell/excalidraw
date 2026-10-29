@@ -552,6 +552,14 @@ export const convertToExcalidrawElements = (
 
         break;
       }
+      case "star": {
+        excalidrawElement = newElement({
+          ...element,
+          width: element.width || DEFAULT_DIMENSION,
+          height: element.height || DEFAULT_DIMENSION,
+        });
+        break;
+      }
       case "line": {
         const width = element.width || DEFAULT_LINEAR_ELEMENT_PROPS.width;
         const height = element.height || DEFAULT_LINEAR_ELEMENT_PROPS.height;
