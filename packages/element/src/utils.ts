@@ -34,7 +34,11 @@ import type {
   Zoom,
 } from "@excalidraw/excalidraw/types";
 
-import { elementCenterPoint, getDiamondPoints } from "./bounds";
+import {
+  elementCenterPoint,
+  getDiamondPoints,
+  getStarPoints,
+} from "./bounds";
 
 import { generateLinearCollisionShape } from "./shape";
 
@@ -57,6 +61,7 @@ import type {
   ExcalidrawFreeDrawElement,
   ExcalidrawLinearElement,
   ExcalidrawRectanguloidElement,
+  ExcalidrawStarElement,
 } from "./types";
 
 type ElementShape = [LineSegment<GlobalPoint>[], Curve<GlobalPoint>[]];
@@ -468,6 +473,33 @@ export function deconstructDiamondElement(
   const shape = [sides, corners.flat()] as ElementShape;
 
   setElementShapesCacheEntry(element, shape, offset);
+
+  return shape;
+}
+
+/**
+ * Get the **unrotated** sides of a star element. Stars have no rounded
+ * corners, so the curves list is always empty.
+ */
+export function deconstructStarElement(
+  element: ExcalidrawStarElement,
+): [LineSegment<GlobalPoint>[], Curve<GlobalPoint>[]] {
+  const cachedShape = getElementShapesCacheEntry(element, 0);
+
+  if (cachedShape) {
+    return cachedShape;
+  }
+
+  const points = getStarPoints(element).map(([x, y]) =>
+    pointFrom<GlobalPoint>(element.x + x, element.y + y),
+  );
+  const sides = points.map((point, i) =>
+    lineSegment<GlobalPoint>(point, points[(i + 1) % points.length]),
+  );
+
+  const shape: ElementShape = [sides, []];
+
+  setElementShapesCacheEntry(element, shape, 0);
 
   return shape;
 }

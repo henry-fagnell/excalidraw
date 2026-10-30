@@ -164,7 +164,7 @@ export type ValidLinearElement = {
 
 export type ValidContainer =
   | {
-      type: Exclude<ExcalidrawGenericElement["type"], "selection">;
+      type: Exclude<ExcalidrawGenericElement["type"], "selection" | "star">;
       id?: ExcalidrawGenericElement["id"];
       label?: {
         text: string;
@@ -186,6 +186,10 @@ export type ExcalidrawElementSkeleton =
       y: number;
     } & Partial<ExcalidrawLinearElement>)
   | ValidContainer
+  | ({
+      type: "star";
+      id?: ExcalidrawGenericElement["id"];
+    } & ElementConstructorOpts)
   | ValidLinearElement
   | ({
       type: "text";
@@ -550,6 +554,14 @@ export const convertToExcalidrawElements = (
           height,
         });
 
+        break;
+      }
+      case "star": {
+        excalidrawElement = newElement({
+          ...element,
+          width: element.width || DEFAULT_DIMENSION,
+          height: element.height || DEFAULT_DIMENSION,
+        });
         break;
       }
       case "line": {
