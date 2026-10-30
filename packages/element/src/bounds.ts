@@ -550,9 +550,7 @@ const UNIT_STAR_POINTS = (() => {
   const minY = Math.min(...ys);
   const spanX = Math.max(...xs) - minX;
   const spanY = Math.max(...ys) - minY;
-  return raw.map(
-    ([x, y]) => [(x - minX) / spanX, (y - minY) / spanY] as const,
-  );
+  return raw.map(([x, y]) => [(x - minX) / spanX, (y - minY) / spanY] as const);
 })();
 
 /**

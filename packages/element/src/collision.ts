@@ -492,7 +492,12 @@ export const intersectElementWithLineSegment = (
         onlyFirst,
       );
     case "star":
-      return intersectStarWithLineSegment(element, elementsMap, line, onlyFirst);
+      return intersectStarWithLineSegment(
+        element,
+        elementsMap,
+        line,
+        onlyFirst,
+      );
     case "ellipse":
       return intersectEllipseWithLineSegment(
         element,

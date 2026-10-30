@@ -34,11 +34,7 @@ import type {
   Zoom,
 } from "@excalidraw/excalidraw/types";
 
-import {
-  elementCenterPoint,
-  getDiamondPoints,
-  getStarPoints,
-} from "./bounds";
+import { elementCenterPoint, getDiamondPoints, getStarPoints } from "./bounds";
 
 import { generateLinearCollisionShape } from "./shape";
 
