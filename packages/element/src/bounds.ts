@@ -533,6 +533,37 @@ export const getDiamondPoints = (element: ExcalidrawElement) => {
   return [topX, topY, rightX, rightY, bottomX, bottomY, leftX, leftY];
 };
 
+const STAR_POINT_COUNT = 5;
+const STAR_INNER_RADIUS_RATIO = 0.38;
+
+// vertices of a point-up unit star, normalized so they span [0, 1] on both
+// axes (a regular star is wider than it is tall)
+const UNIT_STAR_POINTS = (() => {
+  const raw = Array.from({ length: STAR_POINT_COUNT * 2 }, (_, i) => {
+    const radius = i % 2 === 0 ? 1 : STAR_INNER_RADIUS_RATIO;
+    const angle = -Math.PI / 2 + (i * Math.PI) / STAR_POINT_COUNT;
+    return [radius * Math.cos(angle), radius * Math.sin(angle)] as const;
+  });
+  const xs = raw.map(([x]) => x);
+  const ys = raw.map(([, y]) => y);
+  const minX = Math.min(...xs);
+  const minY = Math.min(...ys);
+  const spanX = Math.max(...xs) - minX;
+  const spanY = Math.max(...ys) - minY;
+  return raw.map(([x, y]) => [(x - minX) / spanX, (y - minY) / spanY] as const);
+})();
+
+/**
+ * Vertices of a 5-point star filling the element's box, in local
+ * coordinates, alternating outer and inner points clockwise from the top.
+ */
+export const getStarPoints = (
+  element: Pick<ExcalidrawElement, "width" | "height">,
+): LocalPoint[] =>
+  UNIT_STAR_POINTS.map(([x, y]) =>
+    pointFrom<LocalPoint>(x * element.width, y * element.height),
+  );
+
 // reference: https://eliot-jones.com/2019/12/cubic-bezier-curve-bounding-boxes
 const getBezierValueForT = (
   t: number,
