@@ -6,7 +6,7 @@ import { DEFAULT_SIDEBAR, FONT_FAMILY, ROUNDNESS } from "@excalidraw/common";
 import { newElementWith } from "@excalidraw/element";
 import * as sizeHelpers from "@excalidraw/element";
 
-import type { LocalPoint } from "@excalidraw/math";
+import type { LocalPoint, Radians } from "@excalidraw/math";
 
 import type {
   ExcalidrawArrowElement,
@@ -667,6 +667,39 @@ describe("restoreElements", () => {
     expect(restoredElements[2]).toMatchSnapshot({
       seed: expect.any(Number),
       versionNonce: expect.any(Number),
+    });
+  });
+
+  it("should restore star elements as stars", () => {
+    const star = API.createElement({
+      type: "star",
+      x: 10,
+      y: 20,
+      width: 100,
+      height: 80,
+      angle: 1 as Radians,
+      strokeColor: "red",
+      backgroundColor: "blue",
+      fillStyle: "solid",
+    });
+
+    const [restoredStar] = restore.restoreElements(
+      JSON.parse(JSON.stringify([star])),
+      null,
+    );
+
+    expect(restoredStar).toMatchObject({
+      id: star.id,
+      type: "star",
+      x: 10,
+      y: 20,
+      width: 100,
+      height: 80,
+      angle: 1,
+      strokeColor: "red",
+      backgroundColor: "blue",
+      fillStyle: "solid",
+      roundness: null,
     });
   });
 
