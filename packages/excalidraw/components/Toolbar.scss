@@ -1,6 +1,14 @@
 @use "../css/variables.module" as *;
 
 .excalidraw {
+  // Demo: pink toolbar island. Overrides `background-color` directly (not
+  // the `--island-bg-color` custom property) so the extra-tools dropdown
+  // below, which also renders as an `Island` nested inside `.App-toolbar`
+  // in the DOM, doesn't inherit the pink via CSS variable cascading.
+  .App-toolbar.Island {
+    background-color: #ffd6ec;
+  }
+
   .App-toolbar {
     &.zen-mode {
       .ToolIcon__keybinding,
@@ -51,5 +59,11 @@
     right: 0;
     min-width: 11.875rem;
     z-index: 1;
+  }
+
+  &.theme--dark {
+    .App-toolbar.Island {
+      background-color: #4a2038;
+    }
   }
 }
