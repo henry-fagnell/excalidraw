@@ -15,6 +15,7 @@ import {
   SelectionIcon,
   RectangleIcon,
   DiamondIcon,
+  StarIcon,
   EllipseIcon,
   ArrowIcon,
   LineIcon,
@@ -87,6 +88,11 @@ export const TOOLS = defineTools({
     icon: DiamondIcon,
     letterKey: KEYS.D,
     numericKey: KEYS["3"],
+    fillable: true,
+  },
+  star: {
+    icon: StarIcon,
+    letterKey: KEYS.N,
     fillable: true,
   },
   ellipse: {
@@ -318,6 +324,7 @@ const createToolButton = (
 export const HandToolButton = createToolButton("hand");
 export const RectangleToolButton = createToolButton("rectangle");
 export const DiamondToolButton = createToolButton("diamond");
+export const StarToolButton = createToolButton("star");
 export const EllipseToolButton = createToolButton("ellipse");
 export const ArrowToolButton = createToolButton("arrow");
 export const LineToolButton = createToolButton("line");

@@ -40,6 +40,7 @@ import {
   RectangleToolButton,
   SelectionToolButton,
   SelectionToolPopover,
+  StarToolButton,
   TextToolButton,
 } from "./Tools";
 
@@ -278,6 +279,7 @@ export const Toolbar = ({
         )}
         <RectangleToolButton {...toolProps} />
         <DiamondToolButton {...toolProps} />
+        <StarToolButton {...toolProps} />
         <EllipseToolButton {...toolProps} />
         <ArrowToolButton {...toolProps} />
         <LineToolButton {...toolProps} />
