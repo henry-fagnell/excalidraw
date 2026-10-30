@@ -2,6 +2,12 @@
 
 .excalidraw {
   .App-toolbar {
+    // HEX-1: demo pink toolbar, scoped to this Island only — do not touch
+    // --island-bg-color (or any other token below) globally.
+    --island-bg-color: #f7c6d6;
+    --button-hover-bg: #efadc3;
+    --default-border-color: #e09aaf;
+
     &.zen-mode {
       .ToolIcon__keybinding,
       .HintViewer {
@@ -21,6 +27,12 @@
       align-self: center;
       background-color: var(--default-border-color);
     }
+  }
+
+  &.theme--dark .App-toolbar {
+    --island-bg-color: #6a2e42;
+    --button-hover-bg: #85425a;
+    --default-border-color: #8f4a60;
   }
 
   .App-toolbar__extra-tools-trigger {
@@ -51,5 +63,16 @@
     right: 0;
     min-width: 11.875rem;
     z-index: 1;
+
+    // HEX-1: this popup is a nested Island inside .App-toolbar, so it would
+    // otherwise inherit the toolbar's pink tokens — keep it the default
+    // (non-pink) menu surface per the ticket's "out of scope" note.
+    --island-bg-color: #ffffff;
+    --button-hover-bg: var(--color-surface-high);
+    --default-border-color: var(--color-surface-high);
+  }
+
+  &.theme--dark .App-toolbar__extra-tools-dropdown {
+    --island-bg-color: #232329;
   }
 }
