@@ -2,6 +2,10 @@
 
 .excalidraw {
   .App-toolbar {
+    --island-bg-color: #f7c6d6;
+    --button-hover-bg: #efadc3;
+    --default-border-color: #e09aaf;
+
     &.zen-mode {
       .ToolIcon__keybinding,
       .HintViewer {
@@ -51,5 +55,26 @@
     right: 0;
     min-width: 11.875rem;
     z-index: 1;
+  }
+
+  // popovers render inside the toolbar Island and would inherit its pink
+  .App-toolbar .tool-popover-content,
+  .App-toolbar__extra-tools-dropdown {
+    --island-bg-color: #ffffff;
+    --button-hover-bg: var(--color-surface-high);
+    --default-border-color: var(--color-surface-high);
+  }
+
+  &.theme--dark {
+    .App-toolbar {
+      --island-bg-color: #6a2e42;
+      --button-hover-bg: #85425a;
+      --default-border-color: #8f4a60;
+    }
+
+    .App-toolbar .tool-popover-content,
+    .App-toolbar__extra-tools-dropdown {
+      --island-bg-color: #232329;
+    }
   }
 }
